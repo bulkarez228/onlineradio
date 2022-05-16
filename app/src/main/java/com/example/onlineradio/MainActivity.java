@@ -95,8 +95,6 @@ public class MainActivity extends AppCompatActivity {
         initStations();
         initStationRV();
 
-        //edit_adapter = new EditStationAdapter(this, arr);
-
         stationsRV.addOnItemTouchListener(
                 new RecyclerItemClickListener(MainActivity.this, stationsRV ,new RecyclerItemClickListener.OnItemClickListener() {
                     @Override public void onItemClick(View view, int position) {
@@ -143,65 +141,7 @@ public class MainActivity extends AppCompatActivity {
                 })
         );
 
-        /*lv.setOnItemClickListener((parent, view, position, id) -> {
-            id = position;
-            if (lastpos==position){
-                OnMedia(view);
-                adapter.notifyDataSetChanged();
-            }
-            else {
-                stopPlayer();
-                Runnable task = () -> {
-                    runOnUiThread(() -> lconnecting.setVisibility(View.VISIBLE));
-
-                    prepare(arr.get(position).url);
-
-
-                    runOnUiThread(() -> {
-                        lconnecting.setVisibility(View.GONE);
-                        OnMedia(view);
-                    });
-                };
-                Thread thread = new Thread(task);
-                thread.start();
-
-                if(lplayer.getVisibility()== View.GONE){
-                    lplayer.setVisibility(View.VISIBLE);
-                }
-                img.setImageResource(arr.get(position).img);
-                if (lastpos!=-1)
-                    arr.get(lastpos).played=false;
-                arr.get(position).played=true;
-                adapter.notifyDataSetChanged();
-                lastpos = position;
-                name.setText(arr.get(position).name);
-                name.setSelected(true);
-            }
-        });
-
-        lv.setOnItemLongClickListener((adapterView, view, i, l) -> {
-
-            return false;
-        });
-*/
         btn.setOnClickListener(this::OnMedia);
-
-        /*page_selector.setOnCheckedChangeListener((radioGroup, i) -> {
-            switch (i){
-                case R.id.home:
-                    add_btn.setVisibility(View.GONE);
-                    lv.setAdapter(adapter);
-                    break;
-                case R.id.settings:
-                    add_btn.setVisibility(View.VISIBLE);
-                    lv.setAdapter(edit_adapter);
-                    break;
-                case R.id.search:
-                    add_btn.setVisibility(View.GONE);
-                    break;
-            }
-        });*/
-
         add_btn.setOnClickListener(view -> NewStationDialog());
     }
 
@@ -425,6 +365,12 @@ public class MainActivity extends AppCompatActivity {
                 catch (IllegalStateException e) { e.printStackTrace(); }
                 playStatus = true;
             }
+
+            Toast.makeText(this, "Starting notifs!", Toast.LENGTH_SHORT).show();
+            Intent intent = new Intent(MainActivity.this, PlayerNotificationService.class);
+            intent.setAction(PlayerNotificationService.Actions.START_SERVICE);
+            startService(intent);
+
             if (mediaPlayer.isPlaying()) {
                 btn.setImageResource(R.drawable.outline_pause_white_48dp);
             }

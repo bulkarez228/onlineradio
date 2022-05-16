@@ -18,6 +18,11 @@
         <entry key="..\:/Users/bulat/AndroidStudioProjects/OnlineRadio/app/src/main/res/layout/edit_adapter.xml" value="1.2964285714285715" />
         <entry key="..\:/Users/bulat/AndroidStudioProjects/OnlineRadio/app/src/main/res/layout/new_station_dialog.xml" value="0.23802083333333332" />
         <entry key="..\:/Users/bulat/AndroidStudioProjects/OnlineRadio/app/src/main/res/layout/notification.xml" value="0.1897644927536232" />
+        <entry key="app/src/main/res/drawable/corners.xml" value="0.3225" />
+        <entry key="app/src/main/res/drawable/shape_rounded.xml" value="0.3225" />
+        <entry key="app/src/main/res/layout/new_station_dialog.xml" value="0.3591485507246377" />
+        <entry key="app/src/main/res/layout/notification.xml" value="0.3591485507246377" />
+        <entry key="app/src/main/res/layout/notification_player.xml" value="0.15967056323060574" />
       </map>
     </option>
   </component>
