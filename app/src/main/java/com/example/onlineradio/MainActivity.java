@@ -15,6 +15,7 @@ import android.graphics.BitmapFactory;
 import android.graphics.drawable.ColorDrawable;
 import android.media.MediaPlayer;
 import android.net.Uri;
+import android.opengl.Visibility;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.support.v4.media.session.MediaSessionCompat;
@@ -354,7 +355,7 @@ public class MainActivity extends AppCompatActivity {
         url= "https://nashe1.hostingradio.ru/nashe-256";
         try{
             mmr.setDataSource(url);
-            Station station = new Station(url, "Радио маяк", "Федеральная Российская государственная информационно-музыкальная радиостанция", "NEWS", R.drawable.mayak);
+            Station station = new Station(url, "Наше радио", "Рок музыка русских и зарубежных исполнителей", "ROCK", R.drawable.nashe);
             arr.add(station);
         }
         catch (IllegalArgumentException e){
@@ -362,43 +363,6 @@ public class MainActivity extends AppCompatActivity {
             Toast.makeText(this, "Ошибка подключения к радио: "+url, Toast.LENGTH_LONG).show();
         }
 
-        url= "https://radiomv.hostingradio.ru:80/radiomv256.mp3";
-        try{
-            mmr.setDataSource(url);
-            Station station = new Station(url, "Радио маяк", "Федеральная Российская государственная информационно-музыкальная радиостанция", "NEWS", R.drawable.mayak);
-            arr.add(station);
-        }
-        catch (IllegalArgumentException e){
-            e.printStackTrace();
-            Toast.makeText(this, "Ошибка подключения к радио: "+url, Toast.LENGTH_LONG).show();
-        }
-
-        url= "https://nashe1.hostingradio.ru/nashe-256";
-        try{
-            mmr.setDataSource(url);
-            Station station = new Station(url, "Радио маяк", "Федеральная Российская государственная информационно-музыкальная радиостанция", "NEWS", R.drawable.mayak);
-            arr.add(station);
-        }
-        catch (IllegalArgumentException e){
-            e.printStackTrace();
-            Toast.makeText(this, "Ошибка подключения к радио: "+url, Toast.LENGTH_LONG).show();
-        }
-
-        url= "https://radiomv.hostingradio.ru:80/radiomv256.mp3";
-        try{
-            mmr.setDataSource(url);
-            Station station = new Station(url, "Радио маяк", "Федеральная Российская государственная информационно-музыкальная радиостанция", "NEWS", R.drawable.mayak);
-            arr.add(station);
-        }
-        catch (IllegalArgumentException e){
-            e.printStackTrace();
-            Toast.makeText(this, "Ошибка подключения к радио: "+url, Toast.LENGTH_LONG).show();
-        }
-
-        for (int i=0;i<2;i++) {
-            Station station = new Station("extra");
-            arr.add(station);
-        }
 
         return arr;
     }
@@ -418,6 +382,9 @@ public class MainActivity extends AppCompatActivity {
         if (mediaPlayer != null) {
             if (playStatus) {
                 mediaPlayer.pause();
+                if (lplayer.getVisibility()== View.GONE){
+                    lplayer.setVisibility(View.VISIBLE);
+                }
                 playStatus = false;
             }
             else {
