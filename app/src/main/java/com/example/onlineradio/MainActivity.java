@@ -21,6 +21,7 @@ import android.support.v4.media.session.MediaSessionCompat;
 import android.util.Log;
 import android.view.ContextThemeWrapper;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -30,6 +31,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
 import androidx.core.app.NotificationCompat;
@@ -50,7 +52,7 @@ public class MainActivity extends AppCompatActivity {
     ImageView btn;
     TextView name;
     TextView description;
-    RecyclerView lv;
+    RecyclerView stationsRV;
     FloatingActionButton add_btn;
     RelativeLayout lplayer;
     RelativeLayout lconnecting;
@@ -59,7 +61,6 @@ public class MainActivity extends AppCompatActivity {
 
     MediaPlayer mediaPlayer;
     EditStationAdapter edit_adapter;
-    MediaSessionCompat mediaSession;
 
     public static Resources resources;
     public static ArrayList<Station> arr;
@@ -82,7 +83,7 @@ public class MainActivity extends AppCompatActivity {
         btn = findViewById(R.id.button);
         name = findViewById(R.id.textView);
         description = findViewById(R.id.description);
-        lv = findViewById(R.id.listview);
+        stationsRV = findViewById(R.id.listview);
         lplayer = findViewById(R.id.player);
         lconnecting = findViewById(R.id.connecting_layout);
         page_selector = findViewById(R.id.page_selector);
@@ -90,23 +91,57 @@ public class MainActivity extends AppCompatActivity {
         img = findViewById(R.id.imageViewOnPlayer);
 
         FFmpegMediaMetadataRetriever mmr = new FFmpegMediaMetadataRetriever();
-        mediaSession = new MediaSessionCompat(this, "mediaPlayer");
 
-        //settings.getBoolean("firstrun", true)
-        if (settings.getBoolean("firstrun", true)) {
-            arr = makeStations();
-            settings.edit().putBoolean("firstrun", false).apply();
-        }
-        else{
-            arr = DataSaver.getData(this);
-        }
+        initStations();
+        initStationRV();
 
-        adapter = new StationAdapter();
-        lv.setLayoutManager(new LinearLayoutManager(this));
-        lv.setAdapter(adapter);
-        adapter.setItems(arr);
-        edit_adapter = new EditStationAdapter(this, arr);
+        //edit_adapter = new EditStationAdapter(this, arr);
 
+        stationsRV.addOnItemTouchListener(
+                new RecyclerItemClickListener(MainActivity.this, stationsRV ,new RecyclerItemClickListener.OnItemClickListener() {
+                    @Override public void onItemClick(View view, int position) {
+                        id = position;
+                        if (lastpos==position){
+                            OnMedia(view);
+                            adapter.notifyDataSetChanged();
+                        }
+                        else {
+                            stopPlayer();
+                            Runnable task = () -> {
+                                runOnUiThread(() -> lconnecting.setVisibility(View.VISIBLE));
+
+                                prepare(arr.get(position).url);
+
+
+                                runOnUiThread(() -> {
+                                    lconnecting.setVisibility(View.GONE);
+                                    OnMedia(view);
+                                });
+                            };
+                            Thread thread = new Thread(task);
+                            thread.start();
+
+                            if(lplayer.getVisibility()== View.GONE){
+                                lplayer.setVisibility(View.VISIBLE);
+                            }
+                            img.setImageResource(arr.get(position).img);
+                            if (lastpos!=-1)
+                                arr.get(lastpos).played=false;
+                            arr.get(position).played=true;
+                            adapter.notifyDataSetChanged();
+                            lastpos = position;
+                            name.setText(arr.get(position).name);
+                            name.setSelected(true);
+                        }
+                    }
+
+                    @Override public void onLongItemClick(View view, int position) {
+                        Intent intent2 = new Intent(MainActivity.this, EditStationActivity.class);
+                        intent2.putExtra("id", position);
+                        startActivity(intent2);
+                    }
+                })
+        );
 
         /*lv.setOnItemClickListener((parent, view, position, id) -> {
             id = position;
@@ -145,9 +180,7 @@ public class MainActivity extends AppCompatActivity {
         });
 
         lv.setOnItemLongClickListener((adapterView, view, i, l) -> {
-            Intent intent2 = new Intent(MainActivity.this, EditStationActivity.class);
-            intent2.putExtra("id", i);
-            startActivity(intent2);
+
             return false;
         });
 */
@@ -431,6 +464,24 @@ public class MainActivity extends AppCompatActivity {
         AlertDialog alertDialog = alertDialogBuilder.create();
         alertDialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
         alertDialog.show();
+    }
+
+    void initStations(){
+        //settings.getBoolean("firstrun", true)
+        if (settings.getBoolean("firstrun", true)) {
+            arr = makeStations();
+            settings.edit().putBoolean("firstrun", false).apply();
+        }
+        else{
+            arr = DataSaver.getData(this);
+        }
+    }
+
+    void initStationRV(){
+        adapter = new StationAdapter();
+        stationsRV.setLayoutManager(new LinearLayoutManager(this));
+        stationsRV.setAdapter(adapter);
+        adapter.setItems(arr);
     }
 
     @Override
