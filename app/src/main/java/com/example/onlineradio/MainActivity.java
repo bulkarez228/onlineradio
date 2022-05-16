@@ -41,6 +41,7 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 
 import wseemann.media.FFmpegMediaMetadataRetriever;
 
@@ -101,10 +102,11 @@ public class MainActivity extends AppCompatActivity {
         }
 
         adapter = new StationAdapter();
-        adapter.setItems(arr);
-        edit_adapter = new EditStationAdapter(this, arr);
         lv.setLayoutManager(new LinearLayoutManager(this));
         lv.setAdapter(adapter);
+        adapter.setItems(arr);
+        edit_adapter = new EditStationAdapter(this, arr);
+
 
         /*lv.setOnItemClickListener((parent, view, position, id) -> {
             id = position;
