@@ -5,6 +5,7 @@ import static com.example.onlineradio.MainActivity.resources;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.res.Resources;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,11 +25,12 @@ import java.util.List;
 
 public class StationAdapter extends RecyclerView.Adapter<StationAdapter.StationViewHolder> {
 
-    private List<Station> stationList = new ArrayList<>();
+    private ArrayList<Station> stationList = new ArrayList<>();
 
     @NonNull
     @Override
     public StationViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        Log.i("TAG","fine" );
         View view = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.adapter, parent, false);
         return new StationViewHolder(view);
@@ -44,8 +46,8 @@ public class StationAdapter extends RecyclerView.Adapter<StationAdapter.StationV
         return stationList.size();
     }
 
-    public void setItems(ArrayList<Station> stationList) {
-        stationList.addAll(stationList);
+    public void setItems(ArrayList<Station> arr) {
+        stationList=arr;
         notifyDataSetChanged();
     }
 
@@ -71,15 +73,17 @@ public class StationAdapter extends RecyclerView.Adapter<StationAdapter.StationV
         }
 
         public void bind(Station station) {
-            if (type.equals("extra")){
-            /*((TextView) convertView.findViewById(R.id.name)).setVisibility(View.GONE);
+            /*if (type.equals("extra")){
+            ((TextView) convertView.findViewById(R.id.name)).setVisibility(View.GONE);
             ((TextView) convertView.findViewById(R.id.description)).setVisibility(View.GONE);
             ((TextView) convertView.findViewById(R.id.type)).setVisibility(View.GONE);
             ((ImageView) convertView.findViewById(R.id.imageView)).setVisibility(View.GONE);
             ((CheckBox) convertView.findViewById(R.id.checkBox)).setVisibility(View.GONE);
-            convertView.setClickable(false);*/
+            convertView.setClickable(false);*
             }
-            else {
+            else {*/
+
+                Log.i("TAG","fine" );
                 name.setText(station.name);
                 description.setText(station.description);
                 description.setSelected(station.played);
@@ -111,7 +115,7 @@ public class StationAdapter extends RecyclerView.Adapter<StationAdapter.StationV
                     adapter.notifyDataSetChanged();
                 });
 
-            }
+            //}
         }
     }
 
