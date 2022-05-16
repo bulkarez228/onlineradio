@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".EditStationActivity"
+    android:clickable="true"
+    android:focusableInTouchMode="true" >
+
+
+    <ImageView
+        android:id="@+id/imageAlbum"
+        android:layout_width="100sp"
+        android:layout_height="100sp"
+        app:srcCompat="@drawable/album"
+        android:layout_marginTop="40sp"
+        android:transitionName="transition1"
+        android:layout_centerHorizontal="true" />
+
+    <EditText
+        android:id="@+id/stationName"
+        android:layout_width="wrap_content"
+        android:layout_height="40sp"
+        android:ems="10"
+        android:transitionName="transition"
+        android:layout_marginTop="40sp"
+        android:layout_toRightOf="@id/nameText"
+        android:layout_marginStart="5sp"
+        android:inputType="textPersonName"
+        android:layout_below="@id/imageAlbum" />
+
+    <EditText
+        android:id="@+id/stationDescription"
+        android:layout_width="wrap_content"
+        android:layout_height="40sp"
+        android:ems="10"
+        android:layout_marginTop="20sp"
+        android:layout_toRightOf="@id/descriptionText"
+        android:layout_marginStart="5sp"
+        android:inputType="textPersonName"
+        android:layout_below="@id/stationName" />
+
+    <EditText
+        android:id="@+id/stationType"
+        android:layout_width="wrap_content"
+        android:layout_height="40sp"
+        android:layout_marginTop="20sp"
+        android:layout_below="@id/stationDescription"
+        android:layout_toRightOf="@id/typeText"
+        android:layout_marginStart="5sp"
+        android:ems="10"
+        android:inputType="textPersonName" />
+
+    <TextView
+        android:id="@+id/nameText"
+        android:layout_width="100sp"
+        android:layout_height="40sp"
+        android:layout_marginTop="40sp"
+        android:layout_below="@id/imageAlbum"
+        android:layout_marginStart="20sp"
+        android:textSize="20sp"
+        android:gravity="end|center_vertical"
+        android:textColor="@color/bloody_red"
+        android:text="@string/name" />
+
+    <TextView
+        android:id="@+id/descriptionText"
+        android:layout_width="100sp"
+        android:layout_height="40sp"
+        android:layout_below="@id/nameText"
+        android:layout_marginStart="20sp"
+        android:textSize="20sp"
+        android:layout_marginTop="20sp"
+        android:gravity="end|center_vertical"
+        android:textColor="@color/bloody_red"
+        android:text="@string/description" />
+
+    <TextView
+        android:id="@+id/typeText"
+        android:layout_width="100sp"
+        android:layout_height="40sp"
+        android:layout_marginTop="20sp"
+        android:layout_below="@id/descriptionText"
+        android:layout_marginStart="20sp"
+        android:gravity="end|center_vertical"
+        android:text="@string/type_STR"
+        android:textColor="@color/bloody_red"
+        android:textSize="20sp" />
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/delete_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/stationType"
+        android:layout_marginTop="40sp"
+        android:layout_alignParentEnd="true"
+        android:layout_marginEnd="20sp"
+        app:tint="@null"
+        app:srcCompat="@drawable/outline_delete_white_48dp" />
+
+</RelativeLayout>

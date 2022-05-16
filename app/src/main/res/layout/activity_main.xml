@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".MainActivity"
+    android:orientation="horizontal">
+
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/add_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginEnd="10sp"
+        android:layout_marginBottom="120sp"
+        android:tint="@color/white"
+        app:tint="@null"
+        android:src="@drawable/outline_control_point_white_48dp"/>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/listview"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="100sp"
+        android:layout_alignParentBottom="true"
+        android:background="@drawable/gradient"
+        android:clickable="false"
+        android:orientation="horizontal">
+
+        <RelativeLayout
+            android:id="@+id/player"
+            android:layout_width="match_parent"
+            android:layout_height="60sp"
+            android:layout_alignParentBottom="true"
+            android:layout_marginStart="5sp"
+            android:layout_marginEnd="10sp"
+            android:layout_marginBottom="50sp"
+            android:background="@drawable/corners"
+            android:clickable="false">
+
+            <ImageView
+                android:id="@+id/imageViewOnPlayer"
+                android:layout_width="60sp"
+                android:layout_height="60sp"
+                android:layout_marginStart="10sp"
+                android:src="@drawable/album" />
+
+            <TextView
+                android:id="@+id/textView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="5sp"
+                android:layout_toRightOf="@id/imageViewOnPlayer"
+                android:ellipsize="marquee"
+                android:marqueeRepeatLimit="marquee_forever"
+                android:scrollHorizontally="true"
+                android:singleLine="true"
+                android:textColor="@color/white"
+                android:textSize="17sp" />
+
+            <ImageView
+                android:id="@+id/button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_centerVertical="true"
+                android:layout_marginEnd="5sp"
+                android:scaleX="0.9"
+                android:scaleY="0.9"
+                app:srcCompat="@drawable/outline_play_arrow_white_48dp" />
+
+            <CheckBox
+                android:id="@+id/checkBox"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_toLeftOf="@id/button"
+                android:button="@drawable/checkbox_selector"
+                android:visibility="gone"
+                android:scaleX="0.65"
+                android:scaleY="0.65" />
+
+
+        </RelativeLayout>
+
+        <RadioGroup
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:id="@+id/page_selector"
+            android:gravity="center"
+            android:layout_marginStart="50sp"
+            android:visibility="gone"
+            android:orientation="horizontal">
+
+            <RadioButton
+                android:id="@+id/home"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:button="@drawable/home_page_selector"
+                android:layout_weight="1"
+                android:scaleY="0.75"
+                android:scaleX="0.75"
+                android:checked="true" />
+
+            <RadioButton
+                android:id="@+id/search"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:scaleY="0.75"
+                android:scaleX="0.75"
+                android:button="@drawable/find_page_selector"
+                android:layout_weight="1" />
+
+            <RadioButton
+                android:id="@+id/settings"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:scaleY="0.75"
+                android:scaleX="0.75"
+                android:button="@drawable/settings_page_selector"
+                android:layout_weight="1" />
+
+        </RadioGroup>
+
+    </RelativeLayout>
+    <RelativeLayout
+        android:layout_width="150sp"
+        android:layout_height="150sp"
+        android:layout_centerInParent="true"
+        android:id="@+id/connecting_layout"
+        android:visibility="gone"
+        android:background="@drawable/circle">
+        <ProgressBar
+            android:scaleX="2"
+            android:scaleY="2"
+            android:layout_centerInParent="true"
+            android:indeterminateTint="@color/white"
+            android:id="@+id/progressBar"
+            style="?android:attr/progressBarStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+    </RelativeLayout>
+</RelativeLayout>

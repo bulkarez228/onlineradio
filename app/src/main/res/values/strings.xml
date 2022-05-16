@@ -1,0 +1,11 @@
+<resources>
+    <string name="app_name">OnlineRadio</string>
+    <string name="nameofstation">NameOfStation</string>
+    <string name="stationdescription">StationDescription</string>
+    <string name="type">type</string>
+    <string name="place_url">Введите url онлайн радио:</string>
+    <string name="name">Название</string>
+    <string name="description">Описание</string>
+    <string name="type_STR">Жанр</string>
+    <string name="no_type">No type</string>
+</resources>
