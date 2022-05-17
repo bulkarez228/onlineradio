@@ -74,17 +74,14 @@ public class StationAdapter extends RecyclerView.Adapter<StationAdapter.StationV
     }
 
     class StationViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener, View.OnLongClickListener {
-        // Ваш ViewHolder должен содержать переменные для всех
-        // View-компонентов, которым вы хотите задавать какие-либо свойства
-        // в процессе работы пользователя со списком
+
         public ImageView imageView;
         public TextView name;
         public TextView description;
         public TextView type;
         public CheckBox checkBox;
         public Station station;
-        // Мы также создали конструктор, который принимает на вход View-компонент строкИ
-        // и ищет все дочерние компоненты
+
         public StationViewHolder(View itemView) {
             super(itemView);
             itemView.setOnClickListener(this);
