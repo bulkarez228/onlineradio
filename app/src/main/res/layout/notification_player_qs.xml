@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="50dp"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="horizontal">
+
+    <FrameLayout
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_alignParentRight="true"
+        android:id="@+id/cover_sequence">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:adjustViewBounds="true"
+            android:id="@+id/cover_art"
+            android:src="@drawable/ic_launcher_background" />
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="#8000"/>
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:src="@drawable/ic_play"
+            android:layout_margin="10dp"
+            android:focusable="true"
+            android:clickable="true"
+            android:id="@+id/play_pause"
+            android:adjustViewBounds="true"/>
+
+    </FrameLayout>
+
+    <TextView
+        android:layout_toLeftOf="@id/cover_sequence"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:text="Radio Name"
+        android:gravity="center_vertical"
+        android:textSize="20sp"
+        android:id="@+id/radio_name"
+        android:layout_marginHorizontal="10dp"/>
+
+</RelativeLayout>

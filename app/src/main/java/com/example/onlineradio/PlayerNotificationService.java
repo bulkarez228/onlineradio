@@ -56,8 +56,8 @@ public class PlayerNotificationService extends Service {
     }
 
     private void showNotification() {
-        RemoteViews qsNotification = new RemoteViews(getPackageName(), R.layout.notification_player);
-        RemoteViews expandedNotification = new RemoteViews(getPackageName(), R.layout.notification_player);
+        RemoteViews qsNotification = new RemoteViews(getPackageName(), R.layout.notification_player_qs);
+        RemoteViews expandedNotification = new RemoteViews(getPackageName(), R.layout.notification_player_expanded);
 
         Intent notificationIntent = new Intent(this, MainActivity.class);
         notificationIntent.setAction(Actions.MAIN);
@@ -83,8 +83,8 @@ public class PlayerNotificationService extends Service {
             pendingCloseIntent = PendingIntent.getService(this, 0, closeIntent, 0);
         }
 
-        qsNotification.setOnClickPendingIntent(R.id.button_play_pause, playPausePendingIntent);
-        expandedNotification.setOnClickPendingIntent(R.id.button_play_pause, playPausePendingIntent);
+        qsNotification.setOnClickPendingIntent(R.id.play_pause, playPausePendingIntent);
+        expandedNotification.setOnClickPendingIntent(R.id.play_pause, playPausePendingIntent);
 
 
         NotificationCompat.Builder notificationBuilder;
