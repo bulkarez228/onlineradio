@@ -133,8 +133,8 @@ public class EditStationActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
 
-             AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(EditStationActivity.this);
-             //AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(new ContextThemeWrapper(EditStationActivity.this, R.style.myDialog));
+             ///AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(EditStationActivity.this);
+             AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(new ContextThemeWrapper(EditStationActivity.this, R.style.myDialog));
              //TODO
              alertDialogBuilder
                      .setTitle("Вы действительно хотите удалить?")
