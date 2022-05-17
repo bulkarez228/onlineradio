@@ -1,15 +1,20 @@
 package com.example.onlineradio;
 
 import android.app.Notification;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
+import android.content.Context;
 import android.content.Intent;
+import android.os.Build;
 import android.os.IBinder;
 import android.util.Log;
 import android.widget.RemoteViews;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
+import androidx.core.app.NotificationCompat;
 
 public class PlayerNotificationService extends Service {
 
@@ -58,20 +63,41 @@ public class PlayerNotificationService extends Service {
         Intent notificationIntent = new Intent(this, MainActivity.class);
         notificationIntent.setAction(Actions.MAIN);
         notificationIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-        PendingIntent pendingNotificationIntent = PendingIntent.getActivity(this, 0, notificationIntent, 0);
+        PendingIntent pendingNotificationIntent;
 
         Intent closeIntent = new Intent(this, PlayerNotificationService.class);
         closeIntent.setAction(Actions.STOP_SERVICE);
-        PendingIntent pendingCloseIntent = PendingIntent.getService(this, 0, closeIntent, 0);
+        PendingIntent pendingCloseIntent;
 
         Intent playPauseIntent = new Intent(this, PlayerNotificationService.class);
         playPauseIntent.setAction(Actions.PLAY);
-        PendingIntent playPausePendingIntent = PendingIntent.getService(this, 0, playPauseIntent, 0);
+        PendingIntent playPausePendingIntent;
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            pendingNotificationIntent = PendingIntent.getActivity(this, 0, notificationIntent, PendingIntent.FLAG_IMMUTABLE);
+            playPausePendingIntent = PendingIntent.getService(this, 0, playPauseIntent, PendingIntent.FLAG_IMMUTABLE);
+            pendingCloseIntent = PendingIntent.getService(this, 0, closeIntent, PendingIntent.FLAG_IMMUTABLE);
+        }
+        else {
+            pendingNotificationIntent = PendingIntent.getActivity(this, 0, notificationIntent, 0);
+            playPausePendingIntent = PendingIntent.getService(this, 0, playPauseIntent, 0);
+            pendingCloseIntent = PendingIntent.getService(this, 0, closeIntent, 0);
+        }
 
         qsNotification.setOnClickPendingIntent(R.id.button_play_pause, playPausePendingIntent);
         expandedNotification.setOnClickPendingIntent(R.id.button_play_pause, playPausePendingIntent);
 
-        notification = new Notification.Builder(this).build();
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            NotificationChannel channel = new NotificationChannel("PLAYER_CHANNEL", "Radio Player motification channel", NotificationManager.IMPORTANCE_HIGH);
+            channel.setLockscreenVisibility(Notification.VISIBILITY_PUBLIC);
+            NotificationManager manager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+            manager.createNotificationChannel(channel);
+
+            notification = new NotificationCompat.Builder(this, "PLAYER_CHANNEL").build();
+        }
+        else notification = new Notification.Builder(this).build();
+
         notification.contentView = qsNotification;
         notification.bigContentView = expandedNotification;
         notification.flags = Notification.FLAG_ONGOING_EVENT;
