@@ -59,7 +59,7 @@ public class MainActivity extends AppCompatActivity {
     RadioGroup page_selector;
     ImageView img;
 
-    MediaPlayer mediaPlayer;
+    private static MediaPlayer mediaPlayer;
     EditStationAdapter edit_adapter;
 
     public static Resources resources;
@@ -68,9 +68,19 @@ public class MainActivity extends AppCompatActivity {
     public static SharedPreferences settings;
     public static final String APP_PREFERENCES = "settings";
 
-    boolean playStatus = false;
-    int lastpos=-1;
-    int id;
+    private static boolean playStatus = false;
+    private int lastpos=-1;
+    private static int id;
+
+    public static boolean changePlayState() {
+        if (mediaPlayer.isPlaying()) mediaPlayer.pause();
+        else mediaPlayer.start();
+        return mediaPlayer.isPlaying();
+    }
+
+    public static Station getCurrentStation() {
+        return arr.get(id);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -145,7 +155,7 @@ public class MainActivity extends AppCompatActivity {
         add_btn.setOnClickListener(view -> NewStationDialog());
     }
 
-    Station makeStation(String uri) {
+    private Station makeStation(String uri) {
         FFmpegMediaMetadataRetriever mmr = new FFmpegMediaMetadataRetriever();
         String str_name="";
         String str_description="";
@@ -166,7 +176,7 @@ public class MainActivity extends AppCompatActivity {
         return new Station(uri, str_name, str_description, str_genre);
     }
 
-    ArrayList<Station> makeStations() {
+    private ArrayList<Station> makeStations() {
         ArrayList<Station> arr = new ArrayList<>();
         FFmpegMediaMetadataRetriever mmr = new FFmpegMediaMetadataRetriever();
 
@@ -369,6 +379,7 @@ public class MainActivity extends AppCompatActivity {
             Toast.makeText(this, "Starting notifs!", Toast.LENGTH_SHORT).show();
             Intent intent = new Intent(MainActivity.this, PlayerNotificationService.class);
             intent.setAction(PlayerNotificationService.Actions.START_SERVICE);
+            intent.putExtra("PLAY_STATE", mediaPlayer.isPlaying());
             startService(intent);
 
             if (mediaPlayer.isPlaying()) {

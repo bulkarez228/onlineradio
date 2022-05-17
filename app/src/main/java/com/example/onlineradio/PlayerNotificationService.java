@@ -20,7 +20,6 @@ public class PlayerNotificationService extends Service {
 
     public static interface  Actions {
         public static final String MAIN          = "MAIN";
-        public static final String INIT          = "INIT";
         public static final String PLAY          = "PLAY";
         public static final String START_SERVICE = "START_SERVICE";
         public static final String STOP_SERVICE  = "STOP_SERVICE";
@@ -42,12 +41,12 @@ public class PlayerNotificationService extends Service {
         Log.d(LOG_TAG, "onStartCommand: invoked!");
         switch (intent.getAction()) {
             case Actions.START_SERVICE:
-                showNotification();
+                showNotification(intent.getExtras().getBoolean("PLAY_STATE"));
                 Log.d(LOG_TAG, "onStartCommand: Starting notification and service!");
                 break;
-            case Actions.MAIN:
-                break;
             case Actions.PLAY:
+                boolean playState = MainActivity.changePlayState();
+                showNotification(playState);
                 break;
             case Actions.STOP_SERVICE:
                 break;
@@ -55,9 +54,28 @@ public class PlayerNotificationService extends Service {
         return START_STICKY;
     }
 
-    private void showNotification() {
+    private void showNotification(boolean isPlaying) {
         RemoteViews qsNotification = new RemoteViews(getPackageName(), R.layout.notification_player_qs);
         RemoteViews expandedNotification = new RemoteViews(getPackageName(), R.layout.notification_player_expanded);
+
+        if (isPlaying) {
+            qsNotification.setImageViewResource(R.id.play_pause, R.drawable.outline_pause_white_48dp);
+            expandedNotification.setImageViewResource(R.id.play_pause, R.drawable.outline_pause_white_48dp);
+        }
+        else {
+            qsNotification.setImageViewResource(R.id.play_pause, R.drawable.outline_play_arrow_white_48dp);
+            expandedNotification.setImageViewResource(R.id.play_pause, R.drawable.outline_play_arrow_white_48dp);
+        }
+
+        Station station = MainActivity.getCurrentStation();
+
+        qsNotification.setTextViewText(R.id.radio_name, station.name);
+        expandedNotification.setTextViewText(R.id.radio_name, station.name);
+
+        expandedNotification.setTextViewText(R.id.radio_description, station.description);
+
+        qsNotification.setImageViewResource(R.id.cover_art, station.img);
+        expandedNotification.setImageViewResource(R.id.cover_art, station.img);
 
         Intent notificationIntent = new Intent(this, MainActivity.class);
         notificationIntent.setAction(Actions.MAIN);
@@ -100,7 +118,8 @@ public class PlayerNotificationService extends Service {
 
         notificationBuilder.setCategory(NotificationCompat.CATEGORY_SERVICE)
                 .setCustomBigContentView(expandedNotification)
-                .setCustomContentView(qsNotification);
+                .setCustomContentView(qsNotification)
+                .setSilent(true);
         notification = notificationBuilder.build();
         notification.flags = Notification.FLAG_FOREGROUND_SERVICE;
         notification.icon = R.drawable.outline_radio_black_48dp;
