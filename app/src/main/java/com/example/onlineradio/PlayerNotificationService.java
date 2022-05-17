@@ -39,12 +39,11 @@ public class PlayerNotificationService extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        toast("Starting notification!1");
-        Log.d(LOG_TAG, "onStartCommand: ");
+        Log.d(LOG_TAG, "onStartCommand: invoked!");
         switch (intent.getAction()) {
             case Actions.START_SERVICE:
                 showNotification();
-                toast("Starting notification!");
+                Log.d(LOG_TAG, "onStartCommand: Starting notification and service!");
                 break;
             case Actions.MAIN:
                 break;
@@ -88,19 +87,22 @@ public class PlayerNotificationService extends Service {
         expandedNotification.setOnClickPendingIntent(R.id.button_play_pause, playPausePendingIntent);
 
 
+        NotificationCompat.Builder notificationBuilder;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             NotificationChannel channel = new NotificationChannel("PLAYER_CHANNEL", "Radio Player motification channel", NotificationManager.IMPORTANCE_HIGH);
             channel.setLockscreenVisibility(Notification.VISIBILITY_PUBLIC);
             NotificationManager manager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
             manager.createNotificationChannel(channel);
 
-            notification = new NotificationCompat.Builder(this, "PLAYER_CHANNEL").build();
+            notificationBuilder = new NotificationCompat.Builder(this, "PLAYER_CHANNEL");
         }
-        else notification = new Notification.Builder(this).build();
+        else notificationBuilder = new NotificationCompat.Builder(this);
 
-        notification.contentView = qsNotification;
-        notification.bigContentView = expandedNotification;
-        notification.flags = Notification.FLAG_ONGOING_EVENT;
+        notificationBuilder.setCategory(NotificationCompat.CATEGORY_SERVICE)
+                .setCustomBigContentView(expandedNotification)
+                .setCustomContentView(qsNotification);
+        notification = notificationBuilder.build();
+        notification.flags = Notification.FLAG_FOREGROUND_SERVICE;
         notification.icon = R.drawable.outline_radio_black_48dp;
         notification.contentIntent = pendingNotificationIntent;
         startForeground(Actions.NOTIFICATION_ID, notification);

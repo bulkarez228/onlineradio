@@ -22,7 +22,7 @@
         <entry key="app/src/main/res/drawable/shape_rounded.xml" value="0.3225" />
         <entry key="app/src/main/res/layout/new_station_dialog.xml" value="0.3591485507246377" />
         <entry key="app/src/main/res/layout/notification.xml" value="0.3591485507246377" />
-        <entry key="app/src/main/res/layout/notification_player.xml" value="0.15967056323060574" />
+        <entry key="app/src/main/res/layout/notification_player.xml" value="0.33" />
       </map>
     </option>
   </component>

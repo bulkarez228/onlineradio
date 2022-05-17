@@ -2,7 +2,7 @@
 <RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="100dp"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="horizontal"
     android:background="@color/bloody_red">
@@ -46,24 +46,17 @@
 
     </LinearLayout>
 
-    <FrameLayout
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:background="?attr/selectableItemBackgroundBorderless"
+    <ImageView
+        android:layout_centerVertical="true"
+        android:id="@+id/button_play_pause"
         android:clickable="true"
         android:focusable="true"
-        android:id="@+id/button_play_pause"
         android:layout_alignParentRight="true"
-        android:layout_centerVertical="true">
-
-        <ImageView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:src="@drawable/ic_play"
-            android:adjustViewBounds="true"
-            app:tint="@color/white"
-            android:padding="15dp"/>
-
-    </FrameLayout>
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:src="@drawable/ic_play"
+        android:adjustViewBounds="true"
+        app:tint="@color/white"
+        android:padding="15dp"/>
 
 </RelativeLayout>
