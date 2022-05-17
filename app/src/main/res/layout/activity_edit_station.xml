@@ -60,6 +60,7 @@
         android:layout_below="@id/imageAlbum"
         android:layout_marginStart="20sp"
         android:textSize="20sp"
+        android:fontFamily="@font/helvetica_regular"
         android:gravity="end|center_vertical"
         android:textColor="@color/bloody_red"
         android:text="@string/name" />
@@ -71,6 +72,7 @@
         android:layout_below="@id/nameText"
         android:layout_marginStart="20sp"
         android:textSize="20sp"
+        android:fontFamily="@font/helvetica_regular"
         android:layout_marginTop="20sp"
         android:gravity="end|center_vertical"
         android:textColor="@color/bloody_red"
@@ -85,6 +87,7 @@
         android:layout_marginStart="20sp"
         android:gravity="end|center_vertical"
         android:text="@string/type_STR"
+        android:fontFamily="@font/helvetica_regular"
         android:textColor="@color/bloody_red"
         android:textSize="20sp" />
 

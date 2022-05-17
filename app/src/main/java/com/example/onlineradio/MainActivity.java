@@ -15,6 +15,7 @@ import android.graphics.BitmapFactory;
 import android.graphics.drawable.ColorDrawable;
 import android.media.MediaPlayer;
 import android.net.Uri;
+import android.opengl.Visibility;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.support.v4.media.session.MediaSessionCompat;
@@ -49,15 +50,15 @@ import wseemann.media.FFmpegMediaMetadataRetriever;
 
 public class MainActivity extends AppCompatActivity {
 
-    ImageView btn;
-    TextView name;
-    TextView description;
-    RecyclerView stationsRV;
-    FloatingActionButton add_btn;
-    RelativeLayout lplayer;
-    RelativeLayout lconnecting;
-    RadioGroup page_selector;
-    ImageView img;
+    public static ImageView btn;
+    public static TextView name;
+    public static TextView description;
+    public static RecyclerView stationsRV;
+    public static FloatingActionButton add_btn;
+    public static RelativeLayout lplayer;
+    public static RelativeLayout lconnecting;
+    public static RadioGroup page_selector;
+    public static ImageView img;
 
     MediaPlayer mediaPlayer;
     EditStationAdapter edit_adapter;
@@ -97,7 +98,52 @@ public class MainActivity extends AppCompatActivity {
 
         //edit_adapter = new EditStationAdapter(this, arr);
 
-        stationsRV.addOnItemTouchListener(
+        adapter.SetOnItemClickListener(new StationAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(View view, int position) {
+                id = position;
+                if (lastpos == position) {
+                    OnMedia();
+                    adapter.notifyDataSetChanged();
+                } else {
+                    stopPlayer();
+                    Runnable task = () -> {
+                        runOnUiThread(() -> lconnecting.setVisibility(View.VISIBLE));
+
+                        prepare(arr.get(position).url);
+
+
+                        runOnUiThread(() -> {
+                            lconnecting.setVisibility(View.GONE);
+                            OnMedia();
+                        });
+                    };
+                    Thread thread = new Thread(task);
+                    thread.start();
+
+                    if (lplayer.getVisibility() == View.GONE) {
+                        lplayer.setVisibility(View.VISIBLE);
+                    }
+                    img.setImageResource(arr.get(position).img);
+                    if (lastpos != -1)
+                        arr.get(lastpos).played = false;
+                    arr.get(position).played = true;
+                    adapter.notifyDataSetChanged();
+                    lastpos = position;
+                    name.setText(arr.get(position).name);
+                    name.setSelected(true);
+                }
+            }
+        });
+        adapter.SetOnItemLongClickListener(new StationAdapter.OnItemLongClickListener() {
+            @Override
+            public void onItemLongClick(View view, int position) {
+                Intent intent2 = new Intent(MainActivity.this, EditStationActivity.class);
+                intent2.putExtra("id", position);
+                startActivity(intent2);
+            }
+        });
+        /*stationsRV.addOnItemTouchListener(
                 new RecyclerItemClickListener(MainActivity.this, stationsRV ,new RecyclerItemClickListener.OnItemClickListener() {
                     @Override public void onItemClick(View view, int position) {
                         id = position;
@@ -141,7 +187,7 @@ public class MainActivity extends AppCompatActivity {
                         startActivity(intent2);
                     }
                 })
-        );
+        );*/
 
         /*lv.setOnItemClickListener((parent, view, position, id) -> {
             id = position;
@@ -184,7 +230,7 @@ public class MainActivity extends AppCompatActivity {
             return false;
         });
 */
-        btn.setOnClickListener(this::OnMedia);
+        btn.setOnClickListener(view -> OnMedia());
 
         /*page_selector.setOnCheckedChangeListener((radioGroup, i) -> {
             switch (i){
@@ -354,7 +400,7 @@ public class MainActivity extends AppCompatActivity {
         url= "https://nashe1.hostingradio.ru/nashe-256";
         try{
             mmr.setDataSource(url);
-            Station station = new Station(url, "Радио маяк", "Федеральная Российская государственная информационно-музыкальная радиостанция", "NEWS", R.drawable.mayak);
+            Station station = new Station(url, "Наше радио", "Рок музыка русских и зарубежных исполнителей", "ROCK", R.drawable.nashe);
             arr.add(station);
         }
         catch (IllegalArgumentException e){
@@ -362,43 +408,6 @@ public class MainActivity extends AppCompatActivity {
             Toast.makeText(this, "Ошибка подключения к радио: "+url, Toast.LENGTH_LONG).show();
         }
 
-        url= "https://radiomv.hostingradio.ru:80/radiomv256.mp3";
-        try{
-            mmr.setDataSource(url);
-            Station station = new Station(url, "Радио маяк", "Федеральная Российская государственная информационно-музыкальная радиостанция", "NEWS", R.drawable.mayak);
-            arr.add(station);
-        }
-        catch (IllegalArgumentException e){
-            e.printStackTrace();
-            Toast.makeText(this, "Ошибка подключения к радио: "+url, Toast.LENGTH_LONG).show();
-        }
-
-        url= "https://nashe1.hostingradio.ru/nashe-256";
-        try{
-            mmr.setDataSource(url);
-            Station station = new Station(url, "Радио маяк", "Федеральная Российская государственная информационно-музыкальная радиостанция", "NEWS", R.drawable.mayak);
-            arr.add(station);
-        }
-        catch (IllegalArgumentException e){
-            e.printStackTrace();
-            Toast.makeText(this, "Ошибка подключения к радио: "+url, Toast.LENGTH_LONG).show();
-        }
-
-        url= "https://radiomv.hostingradio.ru:80/radiomv256.mp3";
-        try{
-            mmr.setDataSource(url);
-            Station station = new Station(url, "Радио маяк", "Федеральная Российская государственная информационно-музыкальная радиостанция", "NEWS", R.drawable.mayak);
-            arr.add(station);
-        }
-        catch (IllegalArgumentException e){
-            e.printStackTrace();
-            Toast.makeText(this, "Ошибка подключения к радио: "+url, Toast.LENGTH_LONG).show();
-        }
-
-        for (int i=0;i<2;i++) {
-            Station station = new Station("extra");
-            arr.add(station);
-        }
 
         return arr;
     }
@@ -414,10 +423,13 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    public void OnMedia(View view) {
+    public void OnMedia() {
         if (mediaPlayer != null) {
             if (playStatus) {
                 mediaPlayer.pause();
+                if (lplayer.getVisibility()== View.GONE){
+                    lplayer.setVisibility(View.VISIBLE);
+                }
                 playStatus = false;
             }
             else {
@@ -504,3 +516,4 @@ public class MainActivity extends AppCompatActivity {
 
 
 }
+
