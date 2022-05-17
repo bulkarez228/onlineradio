@@ -1,9 +1,13 @@
 package com.example.onlineradio;
 import static com.example.onlineradio.MainActivity.adapter;
 import static com.example.onlineradio.MainActivity.arr;
+import static com.example.onlineradio.MainActivity.img;
+import static com.example.onlineradio.MainActivity.lconnecting;
+import static com.example.onlineradio.MainActivity.lplayer;
 import static com.example.onlineradio.MainActivity.resources;
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.Intent;
 import android.content.res.Resources;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -26,11 +30,12 @@ import java.util.List;
 public class StationAdapter extends RecyclerView.Adapter<StationAdapter.StationViewHolder> {
 
     private ArrayList<Station> stationList = new ArrayList<>();
+    OnItemClickListener mItemClickListener;
+    OnItemLongClickListener mItemLongClickListener;
 
     @NonNull
     @Override
     public StationViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        Log.i("TAG","fine" );
         View view = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.adapter, parent, false);
         return new StationViewHolder(view);
@@ -51,7 +56,24 @@ public class StationAdapter extends RecyclerView.Adapter<StationAdapter.StationV
         notifyDataSetChanged();
     }
 
-    class StationViewHolder extends RecyclerView.ViewHolder {
+    public interface OnItemClickListener {
+        public void onItemClick(View view , int position);
+    }
+
+    public interface OnItemLongClickListener {
+        public void onItemLongClick(View view , int position);
+    }
+
+    public void SetOnItemClickListener(final OnItemClickListener mItemClickListener) {
+        this.mItemClickListener = mItemClickListener;
+    }
+
+    public void SetOnItemLongClickListener(final OnItemLongClickListener mItemLongClickListener) {
+        this.mItemLongClickListener = mItemLongClickListener;
+        Log.i("LOG", "clcked!");
+    }
+
+    class StationViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener, View.OnLongClickListener {
         // Ваш ViewHolder должен содержать переменные для всех
         // View-компонентов, которым вы хотите задавать какие-либо свойства
         // в процессе работы пользователя со списком
@@ -60,121 +82,68 @@ public class StationAdapter extends RecyclerView.Adapter<StationAdapter.StationV
         public TextView description;
         public TextView type;
         public CheckBox checkBox;
-
+        public Station station;
         // Мы также создали конструктор, который принимает на вход View-компонент строкИ
         // и ищет все дочерние компоненты
         public StationViewHolder(View itemView) {
             super(itemView);
+            itemView.setOnClickListener(this);
+            itemView.setOnLongClickListener(this);
+
             imageView = itemView.findViewById(R.id.imageView);
             name = itemView.findViewById(R.id.name);
             description = itemView.findViewById(R.id.description);
             type = itemView.findViewById(R.id.type);
             checkBox = itemView.findViewById(R.id.checkBox);
+
+
+            checkBox.setOnClickListener(view -> {
+                station.like = checkBox.isChecked();
+                Collections.sort(stationList, Collections.reverseOrder());
+                adapter.notifyDataSetChanged();
+            });
         }
 
         public void bind(Station station) {
-            /*if (type.equals("extra")){
-            ((TextView) convertView.findViewById(R.id.name)).setVisibility(View.GONE);
-            ((TextView) convertView.findViewById(R.id.description)).setVisibility(View.GONE);
-            ((TextView) convertView.findViewById(R.id.type)).setVisibility(View.GONE);
-            ((ImageView) convertView.findViewById(R.id.imageView)).setVisibility(View.GONE);
-            ((CheckBox) convertView.findViewById(R.id.checkBox)).setVisibility(View.GONE);
-            convertView.setClickable(false);*
-            }
-            else {*/
+            this.station=station;
+            name.setText(station.name);
+            description.setText(station.description);
+            description.setSelected(station.played);
 
-                Log.i("TAG","fine" );
-                name.setText(station.name);
-                description.setText(station.description);
-                description.setSelected(station.played);
-
-                if (station.type.equals("")) {
-                    type.setVisibility(View.GONE);
-                }
-                else {
-                    type.setText(station.type);
-                }
-
-                if (station.played)
-                    name.setTextColor(resources.getColor(R.color.bloody_red));
-                else
-                    name.setTextColor(resources.getColor(R.color.black));
-
-                if (station.img != 0)
-                    imageView.setImageResource(station.img);
-                else
-                    imageView.setImageResource(R.drawable.album);
-
-
-                if (station.like) checkBox.setChecked(true);
-                else checkBox.setChecked(false);
-
-                checkBox.setOnClickListener(view -> {
-                    station.like = checkBox.isChecked();
-                    Collections.sort(arr, Collections.reverseOrder());
-                    adapter.notifyDataSetChanged();
-                });
-
-            //}
-        }
-    }
-
-
-    /*@SuppressLint("InflateParams")
-    @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
-
-        final Station station = getItem(position);
-
-        if (convertView == null) {
-            convertView = LayoutInflater.from(getContext()).inflate(R.layout.adapter, null);
-        }
-        if (station == null) {
-            convertView = LayoutInflater.from(getContext()).inflate(R.layout.adapter, null);
-        }
-        else {
-            if (station.type.equals("extra")){
-                ((TextView) convertView.findViewById(R.id.name)).setVisibility(View.GONE);
-                ((TextView) convertView.findViewById(R.id.description)).setVisibility(View.GONE);
-                ((TextView) convertView.findViewById(R.id.type)).setVisibility(View.GONE);
-                ((ImageView) convertView.findViewById(R.id.imageView)).setVisibility(View.GONE);
-                ((CheckBox) convertView.findViewById(R.id.checkBox)).setVisibility(View.GONE);
-                convertView.setClickable(false);
+            if (station.type.equals("")) {
+                type.setVisibility(View.GONE);
             }
             else {
-                ((TextView) convertView.findViewById(R.id.name)).setText(station.name);
-                ((TextView) convertView.findViewById(R.id.description)).setText(station.description);
-                ((TextView) convertView.findViewById(R.id.description)).setSelected(station.played);
-
-                if (station.type.equals(""))
-                    ((TextView) convertView.findViewById(R.id.type)).setVisibility(View.GONE);
-                else
-                    ((TextView) convertView.findViewById(R.id.type)).setText(station.type);
-
-                if (station.played)
-                    ((TextView) convertView.findViewById(R.id.name)).setTextColor(resources.getColor(R.color.bloody_red));
-                else
-                    ((TextView) convertView.findViewById(R.id.name)).setTextColor(resources.getColor(R.color.black));
-
-                if (station.img != 0)
-                    ((ImageView) convertView.findViewById(R.id.imageView)).setImageResource(station.img);
-                else
-                    ((ImageView) convertView.findViewById(R.id.imageView)).setImageResource(R.drawable.album);
-
-                CheckBox ch = (CheckBox) convertView.findViewById(R.id.checkBox);
-
-                if (station.like) ch.setChecked(true);
-                else ch.setChecked(false);
-
-                ch.setOnClickListener(view -> {
-                    station.like = ch.isChecked();
-                    Collections.sort(arr, Collections.reverseOrder());
-                    adapter.notifyDataSetChanged();
-                });
-
+                type.setText(station.type);
             }
 
+            if (station.played)
+                name.setTextColor(resources.getColor(R.color.bloody_red));
+            else
+                name.setTextColor(resources.getColor(R.color.black));
+
+            if (station.img != 0)
+                imageView.setImageResource(station.img);
+            else
+                imageView.setImageResource(R.drawable.album);
+
+            if (station.like) checkBox.setChecked(true);
+            else checkBox.setChecked(false);
         }
-        return convertView;*/
+
+        @Override
+        public void onClick(View view) {
+            if (mItemClickListener != null) {
+                mItemClickListener.onItemClick(view, getAdapterPosition());
+            }
+        }
+
+        @Override
+        public boolean onLongClick(View view) {
+            mItemLongClickListener.onItemLongClick(view, getAdapterPosition());
+            return true;
+        }
     }
+
+}
 
