@@ -2,41 +2,26 @@ package com.example.onlineradio;
 
 
 import android.app.AlertDialog;
-import android.app.Notification;
-import android.app.NotificationManager;
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
-import android.content.ServiceConnection;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.drawable.ColorDrawable;
 import android.media.MediaPlayer;
 import android.net.Uri;
-import android.opengl.Visibility;
 import android.os.Bundle;
-import android.os.IBinder;
-import android.support.v4.media.session.MediaSessionCompat;
-import android.util.Log;
 import android.view.ContextThemeWrapper;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.ListView;
 import android.widget.RadioGroup;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
-import androidx.core.app.NotificationCompat;
-import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -44,7 +29,6 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collections;
 
 import wseemann.media.FFmpegMediaMetadataRetriever;
 
@@ -60,7 +44,7 @@ public class MainActivity extends AppCompatActivity {
     public static RadioGroup page_selector;
     public static ImageView img;
 
-    MediaPlayer mediaPlayer;
+    private static MediaPlayer mediaPlayer;
     EditStationAdapter edit_adapter;
 
     public static Resources resources;
@@ -69,9 +53,19 @@ public class MainActivity extends AppCompatActivity {
     public static SharedPreferences settings;
     public static final String APP_PREFERENCES = "settings";
 
-    boolean playStatus = false;
-    int lastpos=-1;
-    int id;
+    private static boolean playStatus = false;
+    private int lastpos=-1;
+    private static int id;
+
+    public static boolean changePlayState() {
+        if (mediaPlayer.isPlaying()) mediaPlayer.pause();
+        else mediaPlayer.start();
+        return mediaPlayer.isPlaying();
+    }
+
+    public static Station getCurrentStation() {
+        return arr.get(id);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -251,7 +245,7 @@ public class MainActivity extends AppCompatActivity {
         add_btn.setOnClickListener(view -> NewStationDialog());
     }
 
-    Station makeStation(String uri) {
+    private Station makeStation(String uri) {
         FFmpegMediaMetadataRetriever mmr = new FFmpegMediaMetadataRetriever();
         String str_name="";
         String str_description="";
@@ -272,7 +266,7 @@ public class MainActivity extends AppCompatActivity {
         return new Station(uri, str_name, str_description, str_genre);
     }
 
-    ArrayList<Station> makeStations() {
+    private ArrayList<Station> makeStations() {
         ArrayList<Station> arr = new ArrayList<>();
         FFmpegMediaMetadataRetriever mmr = new FFmpegMediaMetadataRetriever();
 
@@ -437,6 +431,13 @@ public class MainActivity extends AppCompatActivity {
                 catch (IllegalStateException e) { e.printStackTrace(); }
                 playStatus = true;
             }
+
+            Toast.makeText(this, "Starting notifs!", Toast.LENGTH_SHORT).show();
+            Intent intent = new Intent(MainActivity.this, PlayerNotificationService.class);
+            intent.setAction(PlayerNotificationService.Actions.START_SERVICE);
+            intent.putExtra("PLAY_STATE", mediaPlayer.isPlaying());
+            startService(intent);
+
             if (mediaPlayer.isPlaying()) {
                 btn.setImageResource(R.drawable.outline_pause_white_48dp);
             }
